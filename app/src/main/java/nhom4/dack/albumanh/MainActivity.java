@@ -1,21 +1,33 @@
 package nhom4.dack.albumanh;
 
 import android.app.Activity;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 
-public class MainActivity extends AppCompatActivity {
-    Toolbar toolbar;
+import nhom4.dack.albumanh.adapter.HomeViewPaperAdapter;
 
+public class MainActivity extends AppCompatActivity {
+    TabLayout tabLayout;
+    ViewPager viewPager;
+    FragmentPagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().setElevation(0);
+
+        mapViewIntoVariablle();
+
+        adapter = new HomeViewPaperAdapter(getSupportFragmentManager(), this);
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override
@@ -27,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void mapViewIntoVariablle()
     {
-//        toolbar = findViewById(R.id.toolbar);
+        tabLayout = findViewById(R.id.tabLayout);
+        viewPager = findViewById(R.id.viewPager);
     }
 }

@@ -1,8 +1,19 @@
 <resources>
     <string name="app_name">AlbumAnh</string>
     <string name="album">Album</string>
+    <string name="photo">Hình</string>
     <string name="add">Thêm</string>
 
     <string name="add_album">Thêm Album</string>
     <string name="add_photo">Thêm Hình</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_view_photo">ViewPhoto</string>
+
+    <string name="crop">Crop</string>
+    <string name="rotate">Xoay</string>
+    <string name="mirror">Phản chiếu</string>
+
+    <string name="edit">Sửa</string>
 </resources>
