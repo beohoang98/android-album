@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.JsonReader;
 import android.util.Log;
@@ -35,6 +36,7 @@ import com.google.gson.JsonParser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -59,21 +61,37 @@ public class PhotoList extends Fragment
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if (listPhotoUri.size() == 0) {
+            (new LoadTestImage()).execute();
+        }
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         photoGrid = view.findViewById(R.id.photoGrid);
-        FlexboxLayoutManager manager = new FlexboxLayoutManager(view.getContext());
-        manager.setFlexDirection(FlexDirection.ROW);
-        manager.setFlexWrap(FlexWrap.WRAP);
-        manager.setAlignItems(AlignItems.STRETCH);
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
+        layoutManager.setInitialPrefetchItemCount(10);
 
-        photoGrid.setLayoutManager(manager);
+        photoGrid.setLayoutManager(layoutManager);
         photoGrid.setAdapter(adapter);
         adapter.setOnItemClickListener(this);
 
-        LoadTestImage task = new LoadTestImage();
-        task.execute();
+        photoGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                if (listPhotoUri.size() < 50 && !recyclerView.canScrollVertically(1)) {
+                    (new LoadTestImage()).execute();
+                    Toast.makeText(getContext(), "Load more", Toast.LENGTH_SHORT)
+                            .show();
+                }
+            }
+        });
     }
 
     @Override
@@ -114,11 +132,22 @@ public class PhotoList extends Fragment
     }
 
     public class LoadTestImage extends AsyncTask<Void, String, Integer>{
+        int lastSize = 0;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            lastSize = listPhotoUri.size();
+            listPhotoUri.addAll(Arrays.asList(new String[10]));
+            adapter.notifyDataSetChanged();
+        }
+
         @Override
         protected void onProgressUpdate(String... values) {
             super.onProgressUpdate(values);
             String uri = values[0];
-            listPhotoUri.add(uri);
+            int idx = Integer.parseInt(values[1]);
+            listPhotoUri.set(idx + lastSize, uri);
             adapter.notifyDataSetChanged();
         }
 
@@ -136,7 +165,7 @@ public class PhotoList extends Fragment
                     int w = this.randomW();
                     int h = this.randomH();
                     String uri = ("https://picsum.photos/" + w + "/" + h + "/");
-                    publishProgress(uri);
+                    publishProgress(uri, i + "");
                 }
             } catch (NullPointerException nullE) {
                 Log.e("LoadTestImage", "NullPointer " + nullE.getMessage());

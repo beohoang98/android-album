@@ -1,11 +1,14 @@
 <resources>
-    <string name="app_name">AlbumAnh</string>
+    <string name="app_name">Album Ảnh</string>
     <string name="album">Album</string>
     <string name="photo">Hình</string>
     <string name="add">Thêm</string>
+    <string name="cancel">Bỏ</string>
 
     <string name="add_album">Thêm Album</string>
-    <string name="add_photo">Thêm Hình</string>
+    <string name="add_photo">Chụp Hình</string>
+
+    <string name="new_album_name">Tên album mới</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -16,4 +19,8 @@
     <string name="mirror">Phản chiếu</string>
 
     <string name="edit">Sửa</string>
+
+
+    <!-- ERROR INPUT -->
+    <string name="invalid_album_name">Tên Album không hợp lệ</string>
 </resources>
