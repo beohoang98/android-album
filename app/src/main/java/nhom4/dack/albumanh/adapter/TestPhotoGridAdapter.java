@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.List;
 
 import nhom4.dack.albumanh.R;
@@ -49,7 +50,7 @@ public class TestPhotoGridAdapter extends RecyclerView.Adapter<TestPhotoGridAdap
     @Override
     public void onBindViewHolder(@NonNull TestPhotoGridAdapter.TestPhotoViewHolder viewHolder, int i) {
         String uri = listUri.get(i);
-        Picasso.get().load(uri)
+        Picasso.get().load(new File(uri))
                 .placeholder(android.R.color.darker_gray)
                 .into(viewHolder.imageView);
     }
