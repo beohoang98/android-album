@@ -5,10 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -16,57 +14,38 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.JsonReader;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
-
-import com.google.android.flexbox.AlignContent;
-import com.google.android.flexbox.AlignItems;
-import com.google.android.flexbox.FlexDirection;
-import com.google.android.flexbox.FlexWrap;
-import com.google.android.flexbox.FlexboxLayoutManager;
-import com.google.android.flexbox.JustifyContent;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import nhom4.dack.albumanh.R;
 import nhom4.dack.albumanh.ViewPhoto;
-import nhom4.dack.albumanh.adapter.TestPhotoGridAdapter;
-import nhom4.dack.albumanh.utils.Fetch;
+import nhom4.dack.albumanh.adapter.PhotoGridAdapter;
 
 @SuppressLint("ValidFragment")
 public class PhotoList extends Fragment
-        implements TestPhotoGridAdapter.OnItemClickListener
+        implements PhotoGridAdapter.OnItemClickListener
 {
     Context mContext;
     private OnFragmentInteractionListener mListener;
 
     RecyclerView photoGrid;
-    TestPhotoGridAdapter adapter;
+    PhotoGridAdapter adapter;
     final public List<String> listPhotoUri;
 
     @SuppressLint("ValidFragment")
     public PhotoList(Context context) {
-        Log.d("chienpm", "invoked to Photolist() constructor");
+        Log.d("nhom04", "invoked to Photolist() constructor");
         mContext = context;
         listPhotoUri = new ArrayList<>();
-        adapter = new TestPhotoGridAdapter(listPhotoUri);
+        adapter = new PhotoGridAdapter(listPhotoUri);
     }
 
     @Override
@@ -80,7 +59,7 @@ public class PhotoList extends Fragment
     }
 
     private void loadImageUriListFromStorage() {
-        Log.d("chienpm", "invoked to loadImageUriListFromStorage()");
+        Log.d("nhom04", "invoked to loadImageUriListFromStorage()");
         Uri uri;
         Cursor cursor;
         int column_index;
@@ -100,7 +79,7 @@ public class PhotoList extends Fragment
                 column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
                 while (cursor.moveToNext()) {
                     path = cursor.getString(column_index);
-                    Log.d("chienpm", "got image path - "+path);
+                    Log.d("Nhom04", "got image path - "+path);
                     listPhotoUri.add(path);
                 }
 
@@ -121,7 +100,7 @@ public class PhotoList extends Fragment
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
         layoutManager.setInitialPrefetchItemCount(10);
 
-        Log.d("chienpm", "invoked to onViewCreated");
+        Log.d("nhom04", "invoked to onViewCreated");
 
         photoGrid.setLayoutManager(layoutManager);
         photoGrid.setAdapter(adapter);
@@ -165,18 +144,15 @@ public class PhotoList extends Fragment
     }
 
     @Override
-    public void onClick(ImageView imageView) {
+    public void onClick(String uri, ImageView imageView) {
         // https://stackoverflow.com/questions/8407336/how-to-pass-drawable-between-activities
 
         // Todo: why dont we just pass the image's uri in to intent ????
-        Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] b = baos.toByteArray();
-
         Intent intent = new Intent(getContext(), ViewPhoto.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("photo", b);
+        intent.putExtra("photo_uri", uri);
+        Log.d("nhom04", "Bat dau send " + uri + " cho ViewPhoto");
+
         startActivity(intent);
     }
 

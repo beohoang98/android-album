@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.TransitionDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.flexbox.FlexboxLayout;
+import com.squareup.picasso.Picasso;
 
 public class ViewPhoto extends AppCompatActivity {
     PhotoView image;
@@ -37,11 +39,12 @@ public class ViewPhoto extends AppCompatActivity {
 
         try {
             Bundle extras = getIntent().getExtras();
-            byte[] b = extras.getByteArray("photo");
-            Bitmap bmp = BitmapFactory.decodeByteArray(b, 0, b.length);
+            String photoURI = extras.getString("photo_uri");
+            if (photoURI == null) Log.e("nhom04", "Hinh not found");
+            Log.d("nhom04", photoURI);
 
             image = findViewById(R.id.image);
-            image.setImageBitmap(bmp);
+            image.setImageURI(Uri.parse(photoURI));
         } catch (NullPointerException nullE) {
             Log.e("VIEW_PHOTO", "Cannot get intent extra: " + nullE.getMessage());
             finish();
